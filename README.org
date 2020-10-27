@@ -1,0 +1,13 @@
+A simple APRS message to MQTT bridge. I consume the messages in Home Assistant and fire out notifications via Telegram.
+
+* Environment
+Configuration is done with these environment variables:
+
+- MQTT_HOST
+- MQTT_PORT
+- MQTT_USER
+- MQTT_PASSWORD
+- MQTT_TOPIC
+- APRSFI_KEY: From your [[http://aprs.fi][aprs.fi]] profile
+- APRS_CALLSIGNS: Comman separated list of callsigns to monitor
+- LOCK_LOCATION: Location to store timestasmps of last message, I use /tmp.
