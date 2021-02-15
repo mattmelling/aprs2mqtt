@@ -1,9 +1,15 @@
-with import <nixpkgs> {};
-pkgs.python37Packages.buildPythonApplication rec {
+{ pkgs ? import <nixpkgs> {} }:
+let
+  aprslib = pkgs.callPackage ./aprslib.nix { };
+in pkgs.python38Packages.buildPythonPackage rec {
   name = "aprs2mqtt";
   src = ./.;
-  propagateBuildInputs = with pkgs.python37Packages; [
-    paho-mqtt
-    requests
+  propagatedBuildInputs = [
+    (pkgs.python38.withPackages(ps: with ps; [
+      aprslib
+      paho-mqtt
+      plac
+      pyyaml
+    ]))
   ];
 }

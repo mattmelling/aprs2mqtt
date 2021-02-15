@@ -1,1 +1,4 @@
 /build/
+/aprs2mqtt/__pycache__/
+*.pyc
+/result

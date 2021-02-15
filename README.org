@@ -1,13 +1,28 @@
 A simple APRS message to MQTT bridge. I consume the messages in Home Assistant and fire out notifications via Telegram.
 
-* Environment
-Configuration is done with these environment variables:
+* Usage
+#+BEGIN_SRC bash
+python -m aprs2mqtt <config>
+#+END_SRC
 
-- MQTT_HOST
-- MQTT_PORT
-- MQTT_USER
-- MQTT_PASSWORD
-- MQTT_TOPIC
-- APRSFI_KEY: From your [[http://aprs.fi][aprs.fi]] profile
-- APRS_CALLSIGNS: Comman separated list of callsigns to monitor
-- LOCK_LOCATION: Location to store timestasmps of last message, I use /tmp.
+This repository also supplies a [[https://nixos.wiki/wiki/Flakes][Nix Flake]] which allows configuration with a [[https://nixos.org/][NixOS]] module.
+
+* Configuration
+#+BEGIN_SRC yaml
+  aprs:
+    host: euro.aprs2.net
+    port: 14580
+    login: 2E0YML
+  mqtt:
+    host: localhost
+    user: mqtt
+    pass: mqtt
+    port: 1883
+  consumers:
+    - filter: t/m
+      topic: aprs/message
+#+END_SRC
+
+Any values under ~aprs~ or ~mqtt~ can be supplied through environment variables such as ~APRS_HOST~ or ~MQTT_PASS~.
+
+The consumers section maps [[http://www.aprs-is.net/javAPRSFilter.aspx][user defined filters]]. Matching messages are dispatched to the respective topic. 

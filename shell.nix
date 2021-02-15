@@ -1,18 +1,23 @@
-with import <nixpkgs> {};
-stdenv.mkDerivation rec {
+{ pkgs ? import <nixpkgs> {} }:
+with pkgs;
+let
+  aprslib = pkgs.callPackage ./aprslib.nix { };
+in stdenv.mkDerivation rec {
   name = "env";
   env = buildEnv { name = name; paths = buildInputs; };
-  buildInputs = with pkgs.python37Packages; [
-    paho-mqtt
-    requests
-    setuptools
+  buildInputs = [
+    (pkgs.python38.withPackages (ps: with ps; [
+      aprslib
+      paho-mqtt
+      plac
+      pyyaml
+      setuptools
+    ]))
   ];
   MQTT_HOST = "heron.home";
   MQTT_PORT = 1883;
   MQTT_USER = "aprs";
-  MQTT_PASSWORD = builtins.extraBuiltins.pass "home/mqtt/aprs";
-  MQTT_TOPIC = "aprs/messages";
-  APRSFI_KEY = builtins.extraBuiltins.pass "www/aprs.fi/api";
-  APRS_CALLSIGNS = "M7AQT-5,M7AQT-9,M7AQT-10";
-  LOCK_LOCATION = "/tmp";
+  shellHook = ''
+    export MQTT_PASS="$(pass home/mqtt/aprs | head -n1)"
+  '';
 }
